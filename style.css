@@ -77,12 +77,96 @@ button:hover {
 .label {
   font-weight: bold;
   text-transform: uppercase;
-  padding: 8px;
+  padding: 10px;
+  display: inline-block;
+}
+
+.tempo-counter-header {
+  background: #e8e8e8;
+  border-style: solid;
+  border-width: 2px;
+  border-color: #a8a8a8;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.tempo {
+  margin-left: 3px;
+}
+
+.bar {
+  background: #e8e8e8;
+  border-style: solid;
+  border-top-style: hidden;
+  border-width: 2px;
+  border-color: #a8a8a8;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.bar:nth-child(1) {
+  background: #e8e8e8;
+  border-style: solid;
+  border-width: 2px;
+  border-color: #a8a8a8;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .time-signature {
-  background: #e8e8e8;
+  padding-right: 0px !important;
+}
+
+.section {
+  padding: 10px;
   display: inline-block;
+  border-color: #a8a8a8;
+  border-width: 2px;
+}
+
+.remove-bar {
+  border-right-style: solid;
+  display: inline-block;
+  color: #ff0000;
+  font-weight: bold;
+  cursor: pointer;
+  height: 43px;
+}
+.remove-bar:hover {
+  background: #d8d8d8;
+}
+.remove-bar:active {
+  background: #c8c8c8;
+}
+
+.add-bar {
+  border-left-style: solid;
+  display: inline-block;
+  color: #565656;
+  font-weight: bold;
+  cursor: pointer;
+  height: 43px;
+}
+.add-bar:hover {
+  background: #d8d8d8;
+}
+.add-bar:active {
+  background: #c8c8c8;
+}
+
+.disabled {
+  color: #c8c8c8;
+  cursor: no-drop;
+}
+.disabled:hover {
+  background: #e8e8e8;
+}
+.disabled:active {
+  background: #e8e8e8;
 }
 
 .button {
@@ -97,17 +181,15 @@ button:hover {
 .counter {
   background: #565656;
   color: white;
-  padding: 15px;
+  border-left-style: solid;
+  border-width: 2px;
+  font-weight: bold;
+  padding-left: 15px;
+  padding-right: 15px;
 }
 
 .hidden {
   display: none;
-}
-
-label {
-  margin-left: 5px;
-  font-size: 12px;
-  font-weight: bold;
 }
 
 select {

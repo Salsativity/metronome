@@ -15,8 +15,12 @@ const frequencies = {
 };
 
 const elements = {
-    noteType: document.getElementById("note-type"),
-    beatType: document.getElementById("beat-type"),
+    noteTypes: document.getElementsByClassName("note-type"),
+    beatTypes: document.getElementsByClassName("beat-type"),
+    repeats: document.getElementsByClassName("repeat"),
+    addButtons: document.getElementsByClassName("add-bar"),
+    removeButtons: document.getElementsByClassName("remove-bar"),
+    bars: document.getElementsByClassName("bar"),
     tempo: document.getElementById("tempo"),
     tempoValue: document.getElementById("tempo-value"),
     toggleButton: document.getElementById("toggle-button"),
@@ -44,7 +48,7 @@ elements.toggleOptions.addEventListener('click', function () {
     elements.options.classList.toggle('hidden');
 });
 
-elements.beatType.addEventListener('input', update);
+elements.beatTypes[0].addEventListener('input', update);
 
 // tempo: update display value while dragged and update beat when release
 elements.tempo.addEventListener('input', updateTempoValue);
@@ -54,8 +58,31 @@ elements.closeOptions.addEventListener('click', (e) => {
     elements.options.classList.toggle('hidden');
 });
 
+function addBarButtonEvents(startIndex) {
+    var addIndex = 0;
+    Array.from(elements.addButtons).forEach(function(button) {
+        if (addIndex >= startIndex) {
+            button.addEventListener('click', function() {
+                addBar(Array.from(elements.addButtons).indexOf(button));
+            });
+        }
+        addIndex++;
+    });
+    var removeIndex = 0;
+    Array.from(elements.removeButtons).forEach(function(button) {
+        if (removeIndex >= startIndex) {
+            button.addEventListener('click', function() {
+                removeBar(Array.from(elements.removeButtons).indexOf(button));
+            });
+        }
+        removeIndex++;
+    });
+}
+
+addBarButtonEvents(0);
+
 function updateTempoValue() {
-    elements.tempoValue.innerText = `at ${elements.tempo.value} bpm`;
+    elements.tempoValue.innerText = `${elements.tempo.value} bpm`;
 }
 
 function togglePlay() {
@@ -64,13 +91,53 @@ function togglePlay() {
 }
 
 function updateBeatCounter() {
-    const val = elements.noteType.value;
+    const val = elements.noteTypes[0].value;
     elements.beatCounter.innerText = `${(settings.timesThrough % val) + 1}`;
+}
+
+function addBar(index) {
+    var barsDiv = document.getElementById('bars');
+    var noteType = elements.noteTypes[index].value;
+    var beatType = elements.beatTypes[index].value;
+    var repeat = elements.repeats[index].value;
+
+    var originalBar = elements.bars[index];
+    var newBar = originalBar.cloneNode(true);
+
+    barsDiv.append(newBar);
+
+    elements.noteTypes[elements.noteTypes.length-1].value = noteType;
+    elements.beatTypes[elements.beatTypes.length-1].value = beatType;
+    elements.repeats[elements.repeats.length-1].value = repeat;
+
+    addBarButtonEvents(elements.bars.length-1);
+    updateDisabledRemoveButtons();
+}
+
+function removeBar(index) {
+  if (!elements.removeButtons[index].classList.contains("disabled")) {
+      var barsDiv = document.getElementById('bars');
+      barsDiv.removeChild(elements.bars[index]);
+      updateDisabledRemoveButtons();
+  }
+}
+
+function updateDisabledRemoveButtons() {
+    if (elements.removeButtons.length == 1) {
+        Array.from(elements.removeButtons).forEach(function(button) {
+            button.classList.toggle("disabled");
+        });
+    }
+    if (elements.removeButtons.length > 1 && elements.removeButtons[0].classList.contains("disabled")) {
+        Array.from(elements.removeButtons).forEach(function(button) {
+            button.classList.toggle("disabled");
+        });
+    }
 }
 
 /**
  * Updates the text of the button.
- * @param {Boolean} shouldPlaySound 
+ * @param {Boolean} shouldPlaySound
  */
 function updateToggleButtonText(shouldPlaySound) {
     let buttonText = "play";
@@ -92,7 +159,7 @@ function update(shouldPlaySound) {
         // Tick once before starting the interval, to make the metronome
         // start immediately when pressing play.
         tick();
-        return updateBeepInterval(elements.tempo.value, elements.beatType.value);
+        return updateBeepInterval(elements.tempo.value, elements.beatTypes[0].value);
     }
 
     settings.timesThrough = -1;
@@ -140,7 +207,7 @@ function tick() {
 
     gain.connect(context.destination);
 
-    timeToBeep = shouldBeep(settings.timesThrough, elements.noteType.value)
+    timeToBeep = shouldBeep(settings.timesThrough, elements.noteTypes[0].value)
 
     if (timeToBeep) {
         oscillator.frequency.value = frequencies.high
