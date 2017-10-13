@@ -125,12 +125,20 @@ function removeBar(index) {
 function updateDisabledRemoveButtons() {
     if (elements.removeButtons.length == 1) {
         Array.from(elements.removeButtons).forEach(function(button) {
-            button.classList.toggle("disabled");
+            button.classList.add("disabled");
+        });
+        Array.from(elements.repeats).forEach(function(dropdown) {
+            dropdown.value = "1";
+            var att = document.createAttribute("disabled");
+            dropdown.setAttributeNode(att)
         });
     }
     if (elements.removeButtons.length > 1 && elements.removeButtons[0].classList.contains("disabled")) {
         Array.from(elements.removeButtons).forEach(function(button) {
-            button.classList.toggle("disabled");
+            button.classList.remove("disabled");
+        });
+        Array.from(elements.repeats).forEach(function(dropdown) {
+            dropdown.removeAttribute("disabled");
         });
     }
 }
