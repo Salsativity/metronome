@@ -111,18 +111,18 @@ function addBar(index) {
     elements.repeats[elements.repeats.length-1].value = repeat;
 
     addBarButtonEvents(elements.bars.length-1);
-    updateDisabledRemoveButtons();
+    updateDisabled();
 }
 
 function removeBar(index) {
   if (!elements.removeButtons[index].classList.contains("disabled")) {
       var barsDiv = document.getElementById('bars');
       barsDiv.removeChild(elements.bars[index]);
-      updateDisabledRemoveButtons();
+      updateDisabled();
   }
 }
 
-function updateDisabledRemoveButtons() {
+function updateDisabled() {
     if (elements.removeButtons.length == 1) {
         Array.from(elements.removeButtons).forEach(function(button) {
             button.classList.add("disabled");
