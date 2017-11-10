@@ -10,6 +10,7 @@
     <main class="box">
     <div class="wrapper">
         <div class="tempo-counter-header">
+            <label class="button section tap label" id="tap-button">tap</label>
             <div class="label tempo section">
                 Tempo: <span id="tempo-value">120 bpm</span>
             </div>
@@ -17,7 +18,7 @@
         </div>
         <div id="bars">
             <div class="bar">
-                <label class="section remove-bar disabled">X</label>
+                <label class="button section remove-bar disabled">X</label>
                 <div class="section time-signature">
                     <select class="form-element label note-type">
                         <option value="1">1</option>
@@ -67,15 +68,14 @@
                         <option value="9">x9</option>
                     </select>
                 </div>
-                <label class="section add-bar">+</label>
+                <label class="button section add-bar">+</label>
             </div>
         </div>
     </div>
 
     <input id="tempo" value="120" type="range" min="0" max="300" autocomplete="off">
 
-  <button class="button label" id="toggle-button">start</button>
-	<button class="button label" id="tap-button">Tap</button>
+  <label class="button label toggle" id="toggle-button">start</label>
 
     </main>
 
