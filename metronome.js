@@ -6,8 +6,8 @@ var beepInterval;
 const context = new (window.AudioContext || window.webkitAudioContext)();
 
 /**
- * Low: The beep that is made on every beat but the main beat
- * High: The beep that is made on the first beat of the bar
+ * low: The beep that is made on every beat but the main beat
+ * high: The beep that is made on the first beat of the bar
  */
 const frequencies = {
     low: 880.0,
@@ -36,6 +36,7 @@ const elements = {
 /**
  * timesThrough: The amount of beeps made. This is counted so
  *               we can find out the first beat of the bar.
+ * currentBar: The bar that should be playing.
  * playSound: Whether or not we should be beeping
  */
 const settings = {
@@ -115,18 +116,18 @@ function addBar(index) {
     elements.repeats[elements.repeats.length-1].value = repeat;
 
     addBarButtonEvents(elements.bars.length-1);
-    updateDisabled();
+    updateDisabledButtons();
 }
 
 function removeBar(index) {
   if (!elements.removeButtons[index].classList.contains("disabled")) {
       var barsDiv = document.getElementById('bars');
       barsDiv.removeChild(elements.bars[index]);
-      updateDisabled();
+      updateDisabledButtons();
   }
 }
 
-function updateDisabled() {
+function updateDisabledButtons() {
     if (elements.removeButtons.length == 1) {
         Array.from(elements.removeButtons).forEach(function(button) {
             button.classList.add("disabled");
@@ -186,10 +187,9 @@ function updateTapTempo() {
     var bpm = 60 / diffInMillis;
     elements.tempo.value = bpm;
     tick();
-    update();    
+    update();
     updateTempoValue();
 }
-
 
 function updateBeepInterval(tempo, beatType) {
 

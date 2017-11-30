@@ -58,6 +58,10 @@ a:hover {
   text-decoration: underline;
 }
 
+h1 {
+  margin: 0 !important;
+}
+
 input, button {
   width: 100%;
 }
