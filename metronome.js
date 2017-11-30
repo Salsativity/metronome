@@ -40,6 +40,7 @@ const elements = {
  */
 const settings = {
     timesThrough: -1,
+    currentBar: 0,
     playSound: false
 };
 
@@ -49,7 +50,7 @@ elements.toggleOptions.addEventListener('click', function () {
     elements.options.classList.toggle('hidden');
 });
 
-elements.beatTypes[0].addEventListener('input', update);
+elements.beatTypes[settings.currentBar].addEventListener('input', update);
 
 // tempo: update display value while dragged and update beat when release
 elements.tempo.addEventListener('input', updateTempoValue);
@@ -94,7 +95,7 @@ function togglePlay() {
 }
 
 function updateBeatCounter() {
-    const val = elements.noteTypes[0].value;
+    const val = elements.noteTypes[settings.currentBar].value;
     elements.beatCounter.innerText = `${(settings.timesThrough % val) + 1}`;
 }
 
@@ -136,7 +137,7 @@ function updateDisabled() {
             dropdown.setAttributeNode(att)
         });
     }
-    if (elements.removeButtons.length > 1 && elements.removeButtons[0].classList.contains("disabled")) {
+    if (elements.removeButtons.length > 1 && elements.removeButtons[settings.currentBar].classList.contains("disabled")) {
         Array.from(elements.removeButtons).forEach(function(button) {
             button.classList.remove("disabled");
         });
@@ -170,7 +171,7 @@ function update(shouldPlaySound) {
         // Tick once before starting the interval, to make the metronome
         // start immediately when pressing play.
         tick();
-        return updateBeepInterval(elements.tempo.value, elements.beatTypes[0].value);
+        return updateBeepInterval(elements.tempo.value, elements.beatTypes[settings.currentBar].value);
     }
 
     settings.timesThrough = -1;
@@ -232,7 +233,7 @@ function tick() {
 
     gain.connect(context.destination);
 
-    timeToBeep = shouldBeep(settings.timesThrough, elements.noteTypes[0].value)
+    timeToBeep = shouldBeep(settings.timesThrough, elements.noteTypes[settings.currentBar].value)
 
     if (timeToBeep) {
         oscillator.frequency.value = frequencies.high
