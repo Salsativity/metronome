@@ -245,4 +245,16 @@ function tick() {
     if (gain.gain.value > 0) {
         gain.gain.exponentialRampToValueAtTime(0.00001, context.currentTime + .10)
     }
+
+    if (elements.bars.length > 1) {
+        if (settings.timesThrough == elements.noteTypes[settings.currentBar].value * elements.repeats[settings.currentBar].value) {
+          if (settings.currentBar < elements.bars.length - 1) {
+            settings.currentBar++;
+          } else {
+            settings.currentBar = 0;
+          }
+          settings.timesThrough = -1;
+          update(true);
+        }
+    }
 }
