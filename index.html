@@ -3,7 +3,8 @@
     <meta charset="UTF-8">
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700,800" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="style.css">
-	<link rel="stylesheet" type="text/css" href="spinner.css">
+	<link rel="stylesheet" type="text/css" href="spin.css">
+	<script type="text/javascript" src="spin.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Metronome</title>
 </head>
@@ -13,10 +14,8 @@
         <div class="tempo-counter-header">
             <label class="button section tap label" id="tap-button">tap</label>
             <div class="label tempo section">
-                Tempo: <span id="tempo-value">120 bpm</span>
+                Tempo: <span id="tempo-value">100 bpm</span>
             </div>
-            <label id="beat-counter" class="section counter">0</label>
-			<label id="bar-counter" class="section counter">0</label>
         </div>
         <div id="bars">
             <div class="bar">
@@ -75,18 +74,29 @@
         </div>
     </div>
 
-    <input id="tempo" value="120" type="range" min="0" max="300" autocomplete="off">
+    <input id="tempo" value="100" type="range" min="0" max="300" autocomplete="off">
 
   <label class="button label toggle" id="toggle-button">start</label>
 
     </main>
-    <main class="spinner">
-    <div class="cell">
-      <div class="card">
-        <span class="throbber-loader">Loading&#8230;</span>
-      </div>
+    <script src="spin.js"></script>
+    <div id="spinnerContainer" style="
+    display: inline-block;
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 400px;
+    height: 400px;
+    margin: auto;
+    background-color: #00ff00;">
+    <center>
+	<br><br><br><br><br><br><br><br><br><br><br>
+	<label id="beat-counter" class="section counter">0</label>
+    <label id="bar-counter" class="section counter">0</label>
+	</center>
     </div>
-	</main>
     <section id="options" class="box hidden">
         <span id="close-options" class="btn-close">x</span>
         <h1>Options</h1>

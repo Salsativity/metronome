@@ -2,8 +2,32 @@
  * How often we should beep
  */
 var beepInterval;
-
 const context = new (window.AudioContext || window.webkitAudioContext)();
+var spinnerOpts = {
+      lines: 8, // The number of lines to draw
+      length: 15, // The length of each line
+      width: 25, // The line thickness
+      radius: 52, // The radius of the inner circle
+      scale: 0.85, // Scales overall size of the spinner
+      corners: 0.5, // Corner roundness (0..1)
+      color: 'black', // CSS color or array of colors
+      fadeColor: 'white', // CSS color or array of colors
+      opacity: 0.5, // Opacity of the lines
+      rotate: -90, // The rotation offset
+      direction: 1, // 1: clockwise, -1: counterclockwise
+      speed: (100/60)*8, // Rounds per second
+      trail: 0, // Afterglow percentage
+      fps: 20, // Frames per second when using setTimeout() as a fallback in IE 9
+      zIndex: 2e9, // The z-index (defaults to 2000000000)
+      className: 'spinner', // The CSS class to assign to the spinner
+      top: '60%', // Top position relative to parent
+      left: '50%', // Left position relative to parent
+      shadow: '0 0 1px transparent', // Box-shadow for the lines
+      position: 'relative' // Element positioning
+    };
+
+var spinnerTarget = document.getElementById('spinnerContainer');
+
 
 /**
  * low: The beep that is made on every beat but the main beat
@@ -92,6 +116,7 @@ function updateTempoValue() {
 }
 
 function togglePlay() {
+    //var spinner = new Spinner(spinnerOpts).spin(spinnerTarget);
     settings.playSound = !settings.playSound;
     update(settings.playSound);
 }
@@ -161,7 +186,7 @@ function updateDisabledButtons() {
  */
 function updateToggleButtonText(shouldPlaySound) {
     let buttonText = "start";
-
+    
     if (shouldPlaySound) {
         buttonText = "stop";
     }
