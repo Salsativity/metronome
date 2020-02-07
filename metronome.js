@@ -6,8 +6,8 @@ var beepInterval;
 const context = new (window.AudioContext || window.webkitAudioContext)();
 
 /**
- * Low: The beep that is made on every beat but the main beat
- * High: The beep that is made on the first beat of the bar
+ * low: The beep that is made on every beat but the main beat
+ * high: The beep that is made on the first beat of the bar
  */
 const frequencies = {
     low: 880.0,
@@ -15,8 +15,12 @@ const frequencies = {
 };
 
 const elements = {
-    noteType: document.getElementById("note-type"),
-    beatType: document.getElementById("beat-type"),
+    noteTypes: document.getElementsByClassName("note-type"),
+    beatTypes: document.getElementsByClassName("beat-type"),
+    repeats: document.getElementsByClassName("repeat"),
+    addButtons: document.getElementsByClassName("add-bar"),
+    removeButtons: document.getElementsByClassName("remove-bar"),
+    bars: document.getElementsByClassName("bar"),
     tempo: document.getElementById("tempo"),
     tempoValue: document.getElementById("tempo-value"),
     toggleButton: document.getElementById("toggle-button"),
@@ -32,10 +36,12 @@ const elements = {
 /**
  * timesThrough: The amount of beeps made. This is counted so
  *               we can find out the first beat of the bar.
+ * currentBar: The bar that should be playing.
  * playSound: Whether or not we should be beeping
  */
 const settings = {
     timesThrough: -1,
+    currentBar: 0,
     playSound: false
 };
 
@@ -45,7 +51,7 @@ elements.toggleOptions.addEventListener('click', function () {
     elements.options.classList.toggle('hidden');
 });
 
-elements.beatType.addEventListener('input', update);
+elements.beatTypes[settings.currentBar].addEventListener('input', update);
 
 // tempo: update display value while dragged and update beat when release
 elements.tempo.addEventListener('input', updateTempoValue);
@@ -57,8 +63,31 @@ elements.closeOptions.addEventListener('click', (e) => {
 
 elements.tapButton.addEventListener('click', updateTapTempo);
 
+function addBarButtonEvents(startIndex) {
+    var addIndex = 0;
+    Array.from(elements.addButtons).forEach(function(button) {
+        if (addIndex >= startIndex) {
+            button.addEventListener('click', function() {
+                addBar(Array.from(elements.addButtons).indexOf(button));
+            });
+        }
+        addIndex++;
+    });
+    var removeIndex = 0;
+    Array.from(elements.removeButtons).forEach(function(button) {
+        if (removeIndex >= startIndex) {
+            button.addEventListener('click', function() {
+                removeBar(Array.from(elements.removeButtons).indexOf(button));
+            });
+        }
+        removeIndex++;
+    });
+}
+
+addBarButtonEvents(0);
+
 function updateTempoValue() {
-    elements.tempoValue.innerText = `at ${elements.tempo.value} bpm`;
+    elements.tempoValue.innerText = `${elements.tempo.value} bpm`;
 }
 
 function togglePlay() {
@@ -67,8 +96,56 @@ function togglePlay() {
 }
 
 function updateBeatCounter() {
-    const val = elements.noteType.value;
+    const val = elements.noteTypes[settings.currentBar].value;
     elements.beatCounter.innerText = `${(settings.timesThrough % val) + 1}`;
+}
+
+function addBar(index) {
+    var barsDiv = document.getElementById('bars');
+    var noteType = elements.noteTypes[index].value;
+    var beatType = elements.beatTypes[index].value;
+    var repeat = elements.repeats[index].value;
+
+    var originalBar = elements.bars[index];
+    var newBar = originalBar.cloneNode(true);
+
+    barsDiv.append(newBar);
+
+    elements.noteTypes[elements.noteTypes.length-1].value = noteType;
+    elements.beatTypes[elements.beatTypes.length-1].value = beatType;
+    elements.repeats[elements.repeats.length-1].value = repeat;
+
+    addBarButtonEvents(elements.bars.length-1);
+    updateDisabledButtons();
+}
+
+function removeBar(index) {
+  if (!elements.removeButtons[index].classList.contains("disabled")) {
+      var barsDiv = document.getElementById('bars');
+      barsDiv.removeChild(elements.bars[index]);
+      updateDisabledButtons();
+  }
+}
+
+function updateDisabledButtons() {
+    if (elements.removeButtons.length == 1) {
+        Array.from(elements.removeButtons).forEach(function(button) {
+            button.classList.add("disabled");
+        });
+        Array.from(elements.repeats).forEach(function(dropdown) {
+            dropdown.value = "1";
+            var att = document.createAttribute("disabled");
+            dropdown.setAttributeNode(att)
+        });
+    }
+    if (elements.removeButtons.length > 1 && elements.removeButtons[settings.currentBar].classList.contains("disabled")) {
+        Array.from(elements.removeButtons).forEach(function(button) {
+            button.classList.remove("disabled");
+        });
+        Array.from(elements.repeats).forEach(function(dropdown) {
+            dropdown.removeAttribute("disabled");
+        });
+    }
 }
 
 /**
@@ -95,7 +172,7 @@ function update(shouldPlaySound) {
         // Tick once before starting the interval, to make the metronome
         // start immediately when pressing play.
         tick();
-        return updateBeepInterval(elements.tempo.value, elements.beatType.value);
+        return updateBeepInterval(elements.tempo.value, elements.beatTypes[settings.currentBar].value);
     }
 
     settings.timesThrough = -1;
@@ -110,10 +187,9 @@ function updateTapTempo() {
     var bpm = 60 / diffInMillis;
     elements.tempo.value = bpm;
     tick();
-    update();    
+    update();
     updateTempoValue();
 }
-
 
 function updateBeepInterval(tempo, beatType) {
 
@@ -157,7 +233,7 @@ function tick() {
 
     gain.connect(context.destination);
 
-    timeToBeep = shouldBeep(settings.timesThrough, elements.noteType.value)
+    timeToBeep = shouldBeep(settings.timesThrough, elements.noteTypes[settings.currentBar].value)
 
     if (timeToBeep) {
         oscillator.frequency.value = frequencies.high
@@ -168,5 +244,17 @@ function tick() {
 
     if (gain.gain.value > 0) {
         gain.gain.exponentialRampToValueAtTime(0.00001, context.currentTime + .10)
+    }
+
+    if (elements.bars.length > 1) {
+        if (settings.timesThrough == elements.noteTypes[settings.currentBar].value * elements.repeats[settings.currentBar].value) {
+          if (settings.currentBar < elements.bars.length - 1) {
+            settings.currentBar++;
+          } else {
+            settings.currentBar = 0;
+          }
+          settings.timesThrough = -1;
+          update(true);
+        }
     }
 }
