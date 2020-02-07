@@ -16,6 +16,7 @@
                 Tempo: <span id="tempo-value">120 bpm</span>
             </div>
             <label id="beat-counter" class="section counter">0</label>
+			<label id="bar-counter" class="section counter">0</label>
         </div>
         <div id="bars">
             <div class="bar">
@@ -80,11 +81,11 @@
 
     </main>
     <main class="spinner">
-		<div class="wrapper">
-			<div class="pie spinner"></div>
-			<div class="pie filler"></div>
-			<div class="mask"></div>
-		</div>
+    <div class="cell">
+      <div class="card">
+        <span class="throbber-loader">Loading&#8230;</span>
+      </div>
+    </div>
 	</main>
     <section id="options" class="box hidden">
         <span id="close-options" class="btn-close">x</span>

@@ -82,6 +82,7 @@ input, button {
   justify-content: space-between;
   align-items: center;
   margin-bottom: 10px;
+  padding-right: 10px;
 }
 
 .bar {
@@ -122,7 +123,10 @@ input, button {
   display: inline-block;
   border-color: #a8a8a8;
   border-width: 2px;
+
 }
+
+
 .section:not(.button):not(.counter) {
   padding: 8px;
 }
@@ -178,7 +182,7 @@ input, button {
   border-left-style: solid;
   border-width: 2px;
   font-weight: bold;
-  padding-left: 15px;
+  padding-left: 14px;
   padding-right: 15px;
 }
 

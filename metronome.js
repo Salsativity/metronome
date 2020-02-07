@@ -25,6 +25,7 @@ const elements = {
     tempoValue: document.getElementById("tempo-value"),
     toggleButton: document.getElementById("toggle-button"),
     beatCounter: document.getElementById("beat-counter"),
+    barCounter: document.getElementById("bar-counter"),
     toggleOptions: document.getElementById("toggle-options"),
     closeOptions: document.getElementById("close-options"),
     options: document.getElementById("options"),
@@ -100,6 +101,12 @@ function updateBeatCounter() {
     elements.beatCounter.innerText = `${(settings.timesThrough % val) + 1}`;
 }
 
+function updateBarCounter() {
+    const val = elements.noteTypes[settings.currentBar].value;
+    elements.barCounter.innerText = `${~~(settings.timesThrough / val ) + 1}`
+}
+
+
 function addBar(index) {
     var barsDiv = document.getElementById('bars');
     var noteType = elements.noteTypes[index].value;
@@ -165,6 +172,7 @@ function updateToggleButtonText(shouldPlaySound) {
 function update(shouldPlaySound) {
     updateTempoValue();
     updateBeatCounter();
+    updateBarCounter();
     elements.toggleButton.innerText = updateToggleButtonText(shouldPlaySound);
     clearInterval(beepInterval);
 
@@ -221,8 +229,9 @@ function shouldBeep (timesThrough, noteType) {
 
 function tick() {
     settings.timesThrough++;
+    settings.barThrough++;
     updateBeatCounter();
-
+    updateBarCounter();
     const oscillator = context.createOscillator();
     const gain = context.createGain();
 
